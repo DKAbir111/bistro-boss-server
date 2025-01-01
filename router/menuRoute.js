@@ -5,7 +5,7 @@ const router = express.Router()
 const createMenuRoute = (menuCollections) => {
 
     //get all menu
-    router.get('/', async (req, res) => {
+    router.get('/menu', async (req, res) => {
         const menuItems = await menuCollections.find().toArray();
         res.json(menuItems);
     })

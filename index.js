@@ -1,10 +1,16 @@
 const express = require('express')
+const cors = require('cors')
 require('dotenv').config()
+const createMenuRoute = require('./router/menuRoute')
 
 
 const app = express()
 
 const port = process.env.PORT || 5000;
+
+//middleware
+app.use(cors())
+app.use(express.json())
 app.get('/', (req, res) => {
     res.send('Boss in sitting on the chair...')
 })
@@ -27,6 +33,12 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
+        //database, collections and routes
+        const database = client.db('bistroDB')
+        const menuCollections = database.collection('menu');
+
+        app.use('/api', createMenuRoute(menuCollections))
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
