@@ -10,6 +10,12 @@ const createMenuRoute = (menuCollections) => {
         res.json(menuItems);
     })
 
+    //chef recommends- choose random 3
+    router.get('/menu/chef', async (req, res) => {
+        const menuItems = await menuCollections.aggregate([{ $sample: { size: 3 } }]).toArray()
+        res.json(menuItems);
+    })
+
     return router;
 }
 
