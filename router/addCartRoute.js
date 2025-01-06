@@ -11,6 +11,12 @@ const createAddCartRoute = (addCartCollections) => {
         res.json(result);
     })
 
+    router.get('/cart', async (req, res) => {
+        const email = req.query.email
+        const cartItems = await addCartCollections.find({ email }).toArray();
+        res.send(cartItems);
+    })
+
     return router;
 }
 
