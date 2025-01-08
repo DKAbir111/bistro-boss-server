@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const { ObjectId } = require('mongodb');
 const router = express.Router()
 
 const createUserRoute = (userCollections) => {
@@ -14,6 +15,45 @@ const createUserRoute = (userCollections) => {
         const result = await userCollections.insertOne(newUser);
         res.send(result);
     })
+
+
+    //fetch all user
+    router.get('/user', async (req, res) => {
+        const users = await userCollections.find().toArray();
+        res.send(users);
+    })
+
+    //make admin
+    router.patch('/user/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = {
+            _id: new ObjectId(id)
+        }
+        const updateDoc = {
+            $set: {
+                role: 'admin',
+            }
+        }
+        const result = await userCollections.updateOne(filter, updateDoc)
+        res.send(result);
+    })
+
+    //fetch user by email
+    router.get('/user/admin', async (req, res) => {
+        const email = req.query.email
+        const user = await userCollections.findOne({ email });
+        res.send(user);
+    })
+
+    //delete user by id
+    router.delete('/user/admin/:id', async (req, res) => {
+        const id = req.params.id;
+        const result = await userCollections.deleteOne({ _id: new ObjectId(id) })
+        res.send(result);
+    })
+
+
+
     return router;
 }
 
