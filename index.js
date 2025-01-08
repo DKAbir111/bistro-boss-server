@@ -4,6 +4,7 @@ require('dotenv').config()
 const createMenuRoute = require('./router/menuRoute')
 const createAddCartRoute = require('./router/addCartRoute')
 const createReviewRoute = require('./router/reviewRoute')
+const createUserRoute = require('./router/userRoute.js')
 
 const app = express()
 
@@ -39,15 +40,19 @@ async function run() {
         const menuCollections = database.collection('menu');
         const addCartCollections = database.collection('addcart');
         const reviewCollections = database.collection('review');
+        const userCollections = database.collection('user');
 
         //menu-collections route
         app.use('/api', createMenuRoute(menuCollections))
 
         //add-cart route
-        app.use('/api', createAddCartRoute(addCartCollections))
+        app.use('/api', createAddCartRoute(addCartCollections, menuCollections))
 
         //review route
         app.use('/api', createReviewRoute(reviewCollections))
+
+        //user route
+        app.use('/api', createUserRoute(userCollections))
 
         // Send a ping to confirm a successful connection
         // await client.db("admin").command({ ping: 1 });
