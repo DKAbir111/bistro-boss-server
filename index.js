@@ -5,6 +5,7 @@ const createMenuRoute = require('./router/menuRoute')
 const createAddCartRoute = require('./router/addCartRoute')
 const createReviewRoute = require('./router/reviewRoute')
 const createUserRoute = require('./router/userRoute.js')
+const createSecurityRoute = require('./router/SecurityRoute.js')
 
 const app = express()
 
@@ -41,6 +42,9 @@ async function run() {
         const addCartCollections = database.collection('addcart');
         const reviewCollections = database.collection('review');
         const userCollections = database.collection('user');
+
+        //security Routes
+        app.use('/api', createSecurityRoute())
 
         //menu-collections route
         app.use('/api', createMenuRoute(menuCollections))

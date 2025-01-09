@@ -1,6 +1,7 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const router = express.Router()
+const userVerification = require('../middleware/verifyUser')
 
 const createUserRoute = (userCollections) => {
 
@@ -18,7 +19,8 @@ const createUserRoute = (userCollections) => {
 
 
     //fetch all user
-    router.get('/user', async (req, res) => {
+    router.get('/user', userVerification, async (req, res) => {
+        // console.log(req.headers.authorization.split(' ')[1])
         const users = await userCollections.find().toArray();
         res.send(users);
     })
