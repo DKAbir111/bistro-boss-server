@@ -1,5 +1,4 @@
-var jwt = require('jsonwebtoken');
-
+const jwt = require('jsonwebtoken');
 const userVerification = (req, res, next) => {
     if (!req.headers.authorization) {
         return res.status(401).send({ message: "forbidden access" });
@@ -17,10 +16,10 @@ const userVerification = (req, res, next) => {
             return res.status(403).send({ message: "invalid token" });
         }
 
-
-        req.decoded = decoded; // Attach decoded payload to request object
-        next(); // Proceed to the next middleware/route handler
+        req.decoded = decoded.user;
+        next();
     });
 };
 
-module.exports = userVerification;
+
+module.exports = userVerification; 

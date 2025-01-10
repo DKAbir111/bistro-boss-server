@@ -11,7 +11,6 @@ const createSecurityRoute = () => {
         res.send(token);
     })
 
-
     return router;
 }
 

@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
+
 const createMenuRoute = require('./router/menuRoute')
 const createAddCartRoute = require('./router/addCartRoute')
 const createReviewRoute = require('./router/reviewRoute')
@@ -32,16 +33,18 @@ const client = new MongoClient(uri, {
     }
 });
 
+
+//database, collections and routes
+const database = client.db('bistroDB')
+const menuCollections = database.collection('menu');
+const addCartCollections = database.collection('addcart');
+const reviewCollections = database.collection('review');
+const userCollections = database.collection('user');
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
-        //database, collections and routes
-        const database = client.db('bistroDB')
-        const menuCollections = database.collection('menu');
-        const addCartCollections = database.collection('addcart');
-        const reviewCollections = database.collection('review');
-        const userCollections = database.collection('user');
+
 
         //security Routes
         app.use('/api', createSecurityRoute())
@@ -72,3 +75,5 @@ run().catch(console.dir);
 app.listen(port, () => {
     console.log(`Server is running at: http://localhost:${port}`)
 })
+
+module.exports = { userCollections }

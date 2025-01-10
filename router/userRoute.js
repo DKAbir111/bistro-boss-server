@@ -2,8 +2,29 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const router = express.Router()
 const userVerification = require('../middleware/verifyUser')
+// const adminVerification = require('../middleware/verifyAdmin')
+
 
 const createUserRoute = (userCollections) => {
+
+    //middleware
+    const adminVerification = async (req, res, next) => {
+        try {
+            const email = req.decoded.email
+            // console.log({ email })
+            const user = await userCollections.findOne({ email });
+            const isAdmin = user?.role === 'admin'
+            if (!isAdmin) {
+                return res.status(403).send({ message: "You are not authorized to access this route" });
+            }
+            // console.log(isAdmin)
+        }
+        catch (error) {
+            console.error('Admin verification error:', error.message);
+        }
+        next()
+    }
+
 
     router.post('/user', async (req, res) => {
         const newUser = req.body;
@@ -17,9 +38,8 @@ const createUserRoute = (userCollections) => {
         res.send(result);
     })
 
-
     //fetch all user
-    router.get('/user', userVerification, async (req, res) => {
+    router.get('/user', userVerification, adminVerification, async (req, res) => {
         // console.log(req.headers.authorization.split(' ')[1])
         const users = await userCollections.find().toArray();
         res.send(users);
@@ -55,10 +75,9 @@ const createUserRoute = (userCollections) => {
     })
 
     //check user is admin or not
-
     router.get('/user/admin/:email', userVerification, async (req, res) => {
         const email = req.params.email
-        if (email !== req.decoded.user.email) {
+        if (email !== req.decoded.email) {
             return res.status(403).send({ message: 'unauthorized access' })
         }
         let admin = false
