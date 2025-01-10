@@ -54,8 +54,21 @@ const createUserRoute = (userCollections) => {
         res.send(result);
     })
 
+    //check user is admin or not
 
+    router.get('/user/admin/:email', userVerification, async (req, res) => {
+        const email = req.params.email
+        if (email !== req.decoded.user.email) {
+            return res.status(403).send({ message: 'unauthorized access' })
+        }
+        let admin = false
+        const user = await userCollections.findOne({ email });
+        if (user && user.role === 'admin') {
+            admin = true
+        }
+        res.send({ admin });
 
+    })
     return router;
 }
 
