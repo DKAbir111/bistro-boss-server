@@ -50,7 +50,7 @@ async function run() {
         app.use('/api', createSecurityRoute())
 
         //menu-collections route
-        app.use('/api', createMenuRoute(menuCollections))
+        app.use('/api', createMenuRoute(menuCollections, userCollections))
 
         //add-cart route
         app.use('/api', createAddCartRoute(addCartCollections, menuCollections))

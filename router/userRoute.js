@@ -46,7 +46,7 @@ const createUserRoute = (userCollections) => {
     })
 
     //make admin
-    router.patch('/user/:id', async (req, res) => {
+    router.patch('/user/:id', userVerification, adminVerification, async (req, res) => {
         const id = req.params.id;
         const filter = {
             _id: new ObjectId(id)
@@ -60,15 +60,9 @@ const createUserRoute = (userCollections) => {
         res.send(result);
     })
 
-    //fetch user by email
-    router.get('/user/admin', async (req, res) => {
-        const email = req.query.email
-        const user = await userCollections.findOne({ email });
-        res.send(user);
-    })
 
     //delete user by id
-    router.delete('/user/admin/:id', async (req, res) => {
+    router.delete('/user/admin/:id', userVerification, adminVerification, async (req, res) => {
         const id = req.params.id;
         const result = await userCollections.deleteOne({ _id: new ObjectId(id) })
         res.send(result);
