@@ -64,7 +64,6 @@ const createMenuRoute = (menuCollections, userCollections) => {
     })
 
     //patch item
-
     router.patch('/menu/:id', async (req, res) => {
         const id = req.params.id;
         const newItem = req.body

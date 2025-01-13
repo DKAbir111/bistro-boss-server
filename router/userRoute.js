@@ -45,25 +45,46 @@ const createUserRoute = (userCollections) => {
         res.send(users);
     })
 
-    //make admin
+
+    // Make admin or demote admin
     router.patch('/user/:id', userVerification, adminVerification, async (req, res) => {
         const id = req.params.id;
         const filter = {
             _id: new ObjectId(id)
+        };
+
+        const user = await userCollections.findOne(filter);
+        if (!user) {
+            return res.status(404).send('User not found');
         }
-        const updateDoc = {
-            $set: {
-                role: 'admin',
-            }
+        if (user.email === "darun15-14188@diu.edu.bd") {
+            return res.status(403).send({ message: "You are not authorized to change this user's role" });
         }
-        const result = await userCollections.updateOne(filter, updateDoc)
+        let updateDoc;
+        if (user.role === 'admin') {
+            // Demote admin to user
+            updateDoc = { $set: { role: 'user' } };
+        } else {
+            // Promote user to admin
+            updateDoc = { $set: { role: 'admin' } };
+        }
+
+        const result = await userCollections.updateOne(filter, updateDoc);
         res.send(result);
-    })
+    });
+
 
 
     //delete user by id
     router.delete('/user/admin/:id', userVerification, adminVerification, async (req, res) => {
         const id = req.params.id;
+        const filter = {
+            _id: new ObjectId(id)
+        };
+        const user = await userCollections.findOne(filter);
+        if (user.email = "darun15-14188@diu.edu.bd") {
+            return res.status(403).send({ message: 'unauthorized access' })
+        }
         const result = await userCollections.deleteOne({ _id: new ObjectId(id) })
         res.send(result);
     })

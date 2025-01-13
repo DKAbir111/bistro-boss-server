@@ -7,6 +7,7 @@ const createAddCartRoute = require('./router/addCartRoute')
 const createReviewRoute = require('./router/reviewRoute')
 const createUserRoute = require('./router/userRoute.js')
 const createSecurityRoute = require('./router/SecurityRoute.js')
+const createPaymentIntent = require('./router/paymentRoute')
 
 const app = express()
 
@@ -40,6 +41,7 @@ const menuCollections = database.collection('menu');
 const addCartCollections = database.collection('addcart');
 const reviewCollections = database.collection('review');
 const userCollections = database.collection('user');
+const paymentCollections = database.collection('payment');
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -60,6 +62,10 @@ async function run() {
 
         //user route
         app.use('/api', createUserRoute(userCollections))
+
+        //payment intent
+        app.use('/api', createPaymentIntent(paymentCollections, addCartCollections))
+
 
         // Send a ping to confirm a successful connection
         // await client.db("admin").command({ ping: 1 });

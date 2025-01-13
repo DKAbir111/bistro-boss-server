@@ -21,6 +21,7 @@ const createAddCartRoute = (addCartCollections, menuCollections) => {
                 const menuItem = await menuCollections.findOne({ _id: item.menuId });
                 return {
                     cartId: item._id,
+                    menuId: menuItem._id,
                     ...menuItem
                 }
             })
