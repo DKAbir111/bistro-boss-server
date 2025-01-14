@@ -82,7 +82,7 @@ const createUserRoute = (userCollections) => {
             _id: new ObjectId(id)
         };
         const user = await userCollections.findOne(filter);
-        if (user.email = "darun15-14188@diu.edu.bd") {
+        if (user.email = 'darun15-14188@diu.edu.bd') {
             return res.status(403).send({ message: 'unauthorized access' })
         }
         const result = await userCollections.deleteOne({ _id: new ObjectId(id) })
@@ -90,19 +90,48 @@ const createUserRoute = (userCollections) => {
     })
 
     //check user is admin or not
+    // router.get('/user/admin/:email', userVerification, async (req, res) => {
+    //     const email = req.params.email
+    //     if (email !== req.decoded?.email) {
+    //         return res.status(403).send({ message: 'unauthorized access' })
+    //     }
+    //     let admin = false
+    //     const user = await userCollections.findOne({ email });
+    //     if (user && user.role === 'admin') {
+    //         admin = true
+    //     }
+    //     res.send({ admin });
+
+    // })
+
+
     router.get('/user/admin/:email', userVerification, async (req, res) => {
-        const email = req.params.email
+        const email = req.params.email;
+
         if (email !== req.decoded.email) {
-            return res.status(403).send({ message: 'unauthorized access' })
+            return res.status(403).send({ message: 'forbidden access' })
         }
-        let admin = false
-        const user = await userCollections.findOne({ email });
-        if (user && user.role === 'admin') {
-            admin = true
+
+        const query = { email: email };
+        const user = await userCollections.findOne(query);
+        let admin = false;
+        if (user) {
+            admin = user?.role === 'admin';
         }
         res.send({ admin });
-
     })
+
+    router.get('/users/admin/:email', async (req, res) => {
+        const email = req.params.email;
+        const query = { email: email };
+        const user = await userCollections.findOne(query);
+        let admin = false;
+        if (user) {
+            admin = user?.role === 'admin';
+        }
+        res.send({ admin });
+    })
+
     return router;
 }
 

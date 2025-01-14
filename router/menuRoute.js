@@ -43,7 +43,7 @@ const createMenuRoute = (menuCollections, userCollections) => {
     })
 
     //delete
-    router.delete('/menu/:id', async (req, res) => {
+    router.delete('/menu/:id', userVerification, adminVerification, async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) }
         const result = await menuCollections.deleteOne(filter)
@@ -64,7 +64,7 @@ const createMenuRoute = (menuCollections, userCollections) => {
     })
 
     //patch item
-    router.patch('/menu/:id', async (req, res) => {
+    router.patch('/menu/:id', userVerification, adminVerification, async (req, res) => {
         const id = req.params.id;
         const newItem = req.body
         const filter = { _id: new ObjectId(id) }

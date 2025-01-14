@@ -2,6 +2,7 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const userVerification = require('../middleware/verifyUser')
 // Create a router instance using Express. This router will handle the payment-related endpoints.
 const router = express.Router();
 
@@ -39,7 +40,7 @@ const createPaymentIntent = (paymentCollections, addCartCollections) => {
 
     //add payment history and delete item from cart
 
-    router.post('/payment', async (req, res) => {
+    router.post('/payment', userVerification, async (req, res) => {
         const paymentInfo = req.body
         console.log(paymentInfo.cartIds)
         const result = await paymentCollections.insertOne(paymentInfo)
@@ -53,6 +54,16 @@ const createPaymentIntent = (paymentCollections, addCartCollections) => {
 
         res.send({ deleteResult, result })
     })
+
+
+    // fetch paymentInfo
+    router.get('/payment/:email', userVerification, async (req, res) => {
+        const email = req.params.email
+        const result = await paymentCollections.find({ email }).toArray()
+        res.send(result)
+    })
+
+
 
     // Return the router instance, which can be used in the main server file
     return router;
